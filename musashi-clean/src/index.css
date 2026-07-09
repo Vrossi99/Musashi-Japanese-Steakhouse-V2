@@ -1,0 +1,95 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-sumi: #0F0F10;
+  --color-vermillion: #A6191A;
+  --color-gold: #C8A24C;
+  --color-ember: #EA6A1E;
+  --color-washi: #EDE6D6;
+
+  --color-background: var(--color-sumi);
+  --color-foreground: var(--color-washi);
+
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Cormorant Garamond', serif;
+}
+
+:root {
+  --sumi: #0F0F10;
+  --vermillion: #A6191A;
+  --gold: #C8A24C;
+  --ember: #EA6A1E;
+  --washi: #EDE6D6;
+
+  --background: 240 3% 6%; /* #0F0F10 */
+  --foreground: 42 34% 88%; /* #EDE6D6 */
+}
+
+body {
+  background-color: var(--sumi);
+  color: var(--washi);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: var(--font-serif);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(234, 106, 30, 0.7); }
+  70% { box-shadow: 0 0 0 6px rgba(234, 106, 30, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(234, 106, 30, 0); }
+}
+
+.glow-dot {
+  animation: pulse-glow 2s infinite;
+}
+
+.noise-bg {
+  position: relative;
+}
+.noise-bg::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+  z-index: 1;
+}
+
+.hero-vignette {
+  background: radial-gradient(circle, rgba(15,15,16,0) 40%, rgba(15,15,16,0.6) 100%);
+}
+
+.dotted-leader {
+  flex-grow: 1;
+  border-bottom: 1px dotted rgba(237, 230, 214, 0.3);
+  margin: 0 12px;
+  position: relative;
+  top: -6px;
+}
+
+/* Mobile: override Framer Motion transform so the top nav is always visible */
+@media (max-width: 767px) {
+  .mobile-nav-always-visible {
+    transform: translateY(0) !important;
+  }
+}
