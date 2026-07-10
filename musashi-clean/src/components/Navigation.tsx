@@ -33,6 +33,15 @@ export function Navigation() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
+  // Safety net: whenever the route changes, always release the scroll lock and
+  // jump to top. Without this, navigating from the overlay can leave the body
+  // stuck at `overflow: hidden` while the exit animation is still running —
+  // which renders as a black screen on mobile until you refresh.
+  useEffect(() => {
+    document.body.style.overflow = '';
+    window.scrollTo(0, 0);
+  }, [location]);
+
   // Close on Escape
   useEffect(() => {
     if (!menuOpen) return;
@@ -212,13 +221,13 @@ export function Navigation() {
               transition={{ delay: 0.35, duration: 0.35 }}
               className="px-8 md:px-20 pb-10 flex flex-col sm:flex-row gap-3"
             >
-              <a
+              
                 href="tel:+17027354744"
                 className="flex-1 block bg-ember text-sumi font-medium py-4 text-center text-[13px] uppercase tracking-wider hover:bg-ember/90 transition-colors"
               >
                 Reserve — Call (702) 735-4744
               </a>
-              <a
+              
                 href="https://www.foodie-xpress.com/ordering/restaurant/menu?company_uid=63acd96b-a9f2-496a-9bc4-7f9709af2855&restaurant_uid=96df347f-18ef-40e8-a76e-fc9f29ea47f8&facebook=true"
                 target="_blank"
                 rel="noopener noreferrer"
