@@ -17,41 +17,31 @@ export function Navigation() {
   const overlayRef  = useRef<HTMLDivElement>(null);
   const triggerRef  = useRef<HTMLElement | null>(null);
 
-  // Track scroll position to know if we're at top of page (for transparent home nav)
   useEffect(() => {
     const onScroll = () => setAtTop(window.scrollY < 60);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Reset atTop when route changes
   useEffect(() => { setAtTop(window.scrollY < 60); }, [location]);
 
-  // Lock body scroll when overlay open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
-  // Safety net: whenever the route changes, always release the scroll lock and
-  // jump to top. Without this, navigating from the overlay can leave the body
-  // stuck at `overflow: hidden` while the exit animation is still running —
-  // which renders as a black screen on mobile until you refresh.
   useEffect(() => {
     document.body.style.overflow = '';
     window.scrollTo(0, 0);
   }, [location]);
 
-  // Close on Escape
   useEffect(() => {
     if (!menuOpen) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeMenu(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [menuOpen]);
 
-  // Focus first focusable when overlay opens
   useEffect(() => {
     if (!menuOpen || !overlayRef.current) return;
     const first = overlayRef.current.querySelector<HTMLElement>(
@@ -60,10 +50,8 @@ export function Navigation() {
     first?.focus();
   }, [menuOpen]);
 
-  // Auto-close when route changes
   useEffect(() => { setMenuOpen(false); }, [location]);
 
-  // Focus trap
   const handleOverlayKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key !== 'Tab' || !overlayRef.current) return;
     const focusable = Array.from(
@@ -87,13 +75,11 @@ export function Navigation() {
     setTimeout(() => (triggerRef.current as HTMLElement | null)?.focus(), 300);
   }, []);
 
-  // Transparent only on home page AND when scrolled to the very top
   const isHome = location === '/';
   const transparent = isHome && atTop && !menuOpen;
 
   return (
     <>
-      {/* ── ALWAYS-VISIBLE TOP BAR ────────────────────────────────────── */}
       <header
         className={[
           'fixed top-0 left-0 right-0 z-[60]',
@@ -104,18 +90,16 @@ export function Navigation() {
         ].join(' ')}
       >
         <div className="max-w-7xl mx-auto px-5 h-14 flex items-center justify-between">
-          {/* Wordmark */}
           <Link
             href="/"
             className="font-serif text-gold text-lg tracking-[0.2em] flex items-center gap-2 hover:text-gold/80 transition-colors"
           >
-            武蔵
+            {'\u6B66\u8535'}
             <div className="w-4 h-4 rounded-full border border-vermillion flex items-center justify-center text-vermillion shrink-0">
-              <span className="font-serif text-[6px] leading-none">武蔵</span>
+              <span className="font-serif text-[6px] leading-none">{'\u6B66\u8535'}</span>
             </div>
           </Link>
 
-          {/* Hamburger — desktop AND mobile */}
           <button
             onClick={menuOpen ? closeMenu : openMenu}
             aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
@@ -142,7 +126,6 @@ export function Navigation() {
         </div>
       </header>
 
-      {/* ── FULL-SCREEN OVERLAY ───────────────────────────────────────── */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -159,8 +142,6 @@ export function Navigation() {
             transition={{ duration: 0.25 }}
             className="fixed inset-0 z-[59] bg-black flex flex-col pt-14"
           >
-
-            {/* Close button inside dialog for keyboard users */}
             <div className="absolute top-0 right-0 h-14 flex items-center px-5">
               <button
                 onClick={closeMenu}
@@ -172,7 +153,6 @@ export function Navigation() {
               </button>
             </div>
 
-            {/* Nav links */}
             <nav
               aria-label="Site sections"
               className="flex flex-col justify-center flex-1 px-8 md:px-20 gap-1"
@@ -205,7 +185,9 @@ export function Navigation() {
                         {link.label}
                       </span>
                       {isActive && (
-                        <span className="ml-auto text-vermillion text-xs" aria-hidden="true">●</span>
+                        <span className="ml-auto text-vermillion text-xs" aria-hidden="true">
+                          {'\u25CF'}
+                        </span>
                       )}
                     </Link>
                   </motion.div>
@@ -213,7 +195,6 @@ export function Navigation() {
               })}
             </nav>
 
-            {/* CTA row */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -225,7 +206,7 @@ export function Navigation() {
                 href="tel:+17027354744"
                 className="flex-1 block bg-ember text-sumi font-medium py-4 text-center text-[13px] uppercase tracking-wider hover:bg-ember/90 transition-colors"
               >
-                Reserve — Call (702) 735-4744
+                {'Reserve \u2014 Call (702) 735-4744'}
               </a>
               
                 href="https://www.foodie-xpress.com/ordering/restaurant/menu?company_uid=63acd96b-a9f2-496a-9bc4-7f9709af2855&restaurant_uid=96df347f-18ef-40e8-a76e-fc9f29ea47f8&facebook=true"
@@ -233,7 +214,7 @@ export function Navigation() {
                 rel="noopener noreferrer"
                 className="flex-1 block border border-washi/20 text-washi py-4 text-center text-[13px] uppercase tracking-wider hover:border-washi/50 transition-colors"
               >
-                Order Online →
+                {'Order Online \u2192'}
               </a>
             </motion.div>
           </motion.div>
