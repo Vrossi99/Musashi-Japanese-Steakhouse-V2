@@ -1,5 +1,5 @@
 import { Route, Switch, useLocation, Link } from 'wouter';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import { Hero } from '@/components/Hero';
 import { Reveal } from '@/components/Reveal';
@@ -85,28 +85,31 @@ function NotFound() {
   );
 }
 
-// Animated page transitions
+// Animated page transitions.
+//
+// Note: no AnimatePresence / mode="wait" here. That unmounts the outgoing page
+// before mounting the incoming one, leaving a frame with nothing rendered. On
+// mobile Safari that empty frame lands while `100dvh` is recalculating and
+// shows as a black screen. A keyed fade-in remounts on route change without
+// ever leaving a hole.
 function AnimatedRoutes() {
   const [location] = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.18, ease: 'easeInOut' }}
-      >
-        <Switch location={location}>
-          <Route path="/" component={HomePage} />
-          <Route path="/menu" component={MenuPage} />
-          <Route path="/late-night" component={LateNightPage} />
-          <Route path="/find-us" component={FindUsPage} />
-          <Route path="/reserve" component={ReservePage} />
-          <Route component={NotFound} />
-        </Switch>
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      key={location}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.18, ease: 'easeInOut' }}
+    >
+      <Switch location={location}>
+        <Route path="/" component={HomePage} />
+        <Route path="/menu" component={MenuPage} />
+        <Route path="/late-night" component={LateNightPage} />
+        <Route path="/find-us" component={FindUsPage} />
+        <Route path="/reserve" component={ReservePage} />
+        <Route component={NotFound} />
+      </Switch>
+    </motion.div>
   );
 }
 
