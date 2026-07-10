@@ -38,8 +38,13 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   font-family: var(--font-serif);
 }
 
-html {
-  scroll-behavior: smooth;
+/* Smooth scroll for in-page anchors only. Applying this to `html` globally makes
+   the programmatic scrollTo(0,0) on route change animate, which fights the page
+   fade and can look like a stall on mobile. */
+@media (prefers-reduced-motion: no-preference) {
+  :target {
+    scroll-behavior: smooth;
+  }
 }
 
 .no-scrollbar::-webkit-scrollbar {
